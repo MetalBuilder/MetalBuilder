@@ -296,7 +296,7 @@ final class RenderPass: MetalPass{
             }
         }
         
-        if !encoderIsExternal || component.renderableData.lastPass{
+        if !encoderIsExternal || component.renderableData.lastPass.wrappedValue{
             renderPassEncoder.endEncoding()
             component.renderableData.passRenderEncoder?.encoder = nil
         }

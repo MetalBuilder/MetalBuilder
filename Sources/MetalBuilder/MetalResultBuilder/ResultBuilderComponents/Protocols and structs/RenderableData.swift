@@ -26,7 +26,7 @@ public struct RenderableData{
 //    }
     
     public var passRenderEncoder: MetalRenderPassEncoderContainer?
-    public var lastPass = false
+    public var lastPass: MetalBinding<Bool> = .constant(false)
     public var passColorAttachments: [Int: ColorAttachment] = defaultColorAttachments
     public var depthStencilState: MetalDepthStencilStateContainer?
     public var passStencilAttachment: StencilAttachment?

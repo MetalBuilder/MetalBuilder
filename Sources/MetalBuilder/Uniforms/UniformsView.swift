@@ -8,14 +8,21 @@ public struct UniformsView: View {
     /// - Parameter uniforms: The uniforms container.
     public init(_ uniforms: UniformsContainer, onChange: @escaping (String?)->()={_ in}){
         self.uniforms = uniforms
-        self.onChange = onChange
+        self._onChange = onChange
     }
     
-    let onChange: (String?)->()
+    let _onChange: (String?)->()
+    func onChange(_ group: String?){
+        if wasStartup{
+            _onChange(group)
+        }
+    }
     
     @ObservedObject public var uniforms: UniformsContainer
     
     @State var values: [[Float]] = []
+    
+    @State var wasStartup = false
     
     public var body: some View {
         ScrollView{
@@ -75,12 +82,17 @@ extension UniformsView{
         loadValues()
     }
     func loadValues(){
+        wasStartup = false
         print("Reading Uniforms by Uniforms View")
         values = uniforms.dict.keys.map{
             self.uniforms.getArray($0)!
         }
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.05){
+            wasStartup = true
+        }
     }
     func clearDefaults(){
+        wasStartup = false
         uniforms.loadInitialValues()
         values = []
         DispatchQueue.main.asyncAfter(deadline: .now()+0.05){

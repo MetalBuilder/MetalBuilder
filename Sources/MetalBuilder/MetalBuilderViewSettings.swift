@@ -11,7 +11,8 @@ public struct MetalBuilderViewSettings{
                 depthStencilStorageMode: MTLStorageMode? = nil,
                 clearColor: MTLClearColor? = nil,
                 framebufferOnly: Bool? = nil,
-                preferredFramesPerSecond: Int? = nil) {
+                preferredFramesPerSecond: Int? = nil,
+                sampleCount: Int? = nil) {
         self.depthPixelFormat = depthPixelFormat
         self.stencilPixelFormat = stencilPixelFormat
         self.clearDepth = clearDepth
@@ -21,6 +22,7 @@ public struct MetalBuilderViewSettings{
         self.clearColor = clearColor
         self.framebufferOnly = framebufferOnly
         self.preferredFramesPerSecond = preferredFramesPerSecond
+        self.sampleCount = sampleCount
     }
     var depthPixelFormat: MTLPixelFormat?
     var clearDepth: Double?
@@ -34,6 +36,8 @@ public struct MetalBuilderViewSettings{
     
     var framebufferOnly: Bool?
     var preferredFramesPerSecond: Int?
+    
+    var sampleCount: Int?
 }
 
 extension MetalBuilderViewSettings{
@@ -72,6 +76,9 @@ extension MetalBuilderViewSettings{
             if let depthStencilStorageMode = self.depthStencilStorageMode{
                 view.depthStencilStorageMode = depthStencilStorageMode
             }
+        }
+        if let sampleCount = self.sampleCount{
+            view.sampleCount = sampleCount
         }
     }
 }

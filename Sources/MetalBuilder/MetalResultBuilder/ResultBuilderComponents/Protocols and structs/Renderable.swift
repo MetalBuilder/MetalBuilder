@@ -292,7 +292,8 @@ public extension MetalBuilderComponent where Self: Renderable{
     /// Adds the render pass command encoder to a Renderable component.
     /// - Parameter encoder: The descriptor for the attachement to add.
     /// - Returns: The Render component with the added render pass command encoder .
-    func renderEncoder(_ encoder: MetalRenderPassEncoderContainer, lastPass: Bool = false) -> Self{
+    func renderEncoder(_ encoder: MetalRenderPassEncoderContainer,
+                       lastPass: MetalBinding<Bool> = .constant(false)) -> Self{
         var r = self
         r.renderableData.passRenderEncoder = encoder
         r.renderableData.lastPass = lastPass

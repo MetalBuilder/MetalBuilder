@@ -1,6 +1,23 @@
 import SwiftUI
 import MetalKit
 
+public func gpuStartCapture(){
+    // capture
+    let device = MTLCreateSystemDefaultDevice()
+
+    let captureDescriptor = MTLCaptureDescriptor()
+    captureDescriptor.captureObject = device
+    // destination is developerTools by default
+
+    try? MTLCaptureManager.shared().startCapture(with: captureDescriptor)
+}
+public func gpuStopCapture(){
+    if MTLCaptureManager.shared().isCapturing {
+           MTLCaptureManager.shared().stopCapture()
+       }
+}
+
+
 public func not(_ arg: MetalBinding<Bool>) -> MetalBinding<Bool>{
     MetalBinding<Bool>.init {
         !arg.wrappedValue
@@ -102,6 +119,7 @@ public class AsyncGroupInfo<T: AsyncParameters>: AsyncGroupInfoProtocol{
             guard !self.busy.wrappedValue
             else {
                 print("running: busy")
+                print("adding updates: ", parameters)
                 self.tempParameters.add(parameters)
                 //self.whenBusy(parameters)
                 if !once {
@@ -111,6 +129,8 @@ public class AsyncGroupInfo<T: AsyncParameters>: AsyncGroupInfoProtocol{
             }
             
             self._busy = true
+            print("accumulated tempParameters was: ", self.tempParameters)
+            print("new parameters are: ", parameters)
             self.tempParameters.add(parameters)
             self.parameters = tempParameters
             tempParameters = .nothing
@@ -141,9 +161,13 @@ public class AsyncGroupInfo<T: AsyncParameters>: AsyncGroupInfoProtocol{
             
             print("async work: waiting for result to copy")
             
+            //gpuStartCapture()
+            
             try! self.pass!.encode(passInfo: passInfo)
             
             self.endEncode(commandBuffer: self.commandBuffer)
+            
+            //gpuStopCapture()
             
             print("async work: ended encoding")
             
@@ -154,7 +178,14 @@ public class AsyncGroupInfo<T: AsyncParameters>: AsyncGroupInfoProtocol{
             self.functionCheckQueue.async(flags: .barrier) { [weak self] in
                 guard let self = self else { return }
                 if self.rerunIfCalledWhenBusy && !once && self.wasCalledWhenBusy{
+                    
                     self.wasCalledWhenBusy = false
+                    
+                    print("accumulated tempParameters was: ", self.tempParameters)
+                    print("they will be used now!")
+                    self.parameters = tempParameters
+                    tempParameters = .nothing
+                    
                     try! self.dispatch(once: false)
                 }else{
                     self._complete = true
@@ -169,6 +200,7 @@ extension AsyncGroupInfo{
         self.commandBuffer
     }
     func startEncode() throws -> MTLCommandBuffer{
+        
         guard let commandBuffer = commandQueue!.makeCommandBuffer()
         else{
             throw MetalBuilderRendererError

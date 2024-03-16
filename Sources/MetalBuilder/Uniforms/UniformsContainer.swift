@@ -14,6 +14,7 @@ public final class UniformsContainer: ObservableObject{
             pointer = UnsafeRawPointer(mtlBuffer.contents())
         }
     }
+    var device: MTLDevice!
     var pointer: UnsafeRawPointer?
     var metalDeclaration: MetalTypeDeclaration
     var metalType: String?
@@ -103,6 +104,7 @@ public extension UniformsContainer{
     /// - Parameter device: Metal device.
     public func setup(device: MTLDevice){
         print("Uniforms Container Setup")
+        self.device = device
         if pointer == nil{
             var bytes = dict.values.flatMap{ $0.initValue }
             mtlBuffer = device.makeBuffer(bytes: &bytes, length: length)
@@ -120,7 +122,6 @@ public extension UniformsContainer{
         }
     }
     /// Loads Initial Values for Uniforms.
-    /// - Parameter device: Metal device.
     func loadInitialValues(){
         print("Load Initial Values for Uniforms")
         _ = dict.map{ self.setArray($0.value.initValue, for: $0.key) }
@@ -363,6 +364,15 @@ public extension UniformsContainer{
             }
         }
         self.dict = selfDict
+    }
+    func copyFrom(_ source: UniformsContainer){
+        guard let sourceBufer = source.mtlBuffer
+        else{ return }
+        let length = sourceBufer.length
+        let bytes = sourceBufer.contents()
+        self.mtlBuffer = source.device.makeBuffer(bytes: bytes,
+                                                  length: length)
+        self.device = source.device
     }
 }
 
