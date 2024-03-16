@@ -84,6 +84,10 @@ final class RenderPass: MetalPass{
             renderPipelineDescriptor.colorAttachments[0].pixelFormat = renderInfo.pixelFormat
         }
         
+        if let sampleCount = component.sampleCount{
+            renderPipelineDescriptor.rasterSampleCount = sampleCount
+        }
+        
         if let piplineSetupClosure = component.piplineSetupClosure?.wrappedValue{
             renderPiplineState = piplineSetupClosure(renderInfo.device, libraryContainer!.library!)
         }else{
@@ -116,6 +120,7 @@ final class RenderPass: MetalPass{
                 throw MetalBuilderRenderPassError.noIndexBuffer(component.label)
             }
         }
+        
         //Additional pipeline setup logic
         if let additionalPiplineSetupClosure = component.additionalPiplineSetupClosure?.wrappedValue{
             additionalPiplineSetupClosure(renderPiplineState)

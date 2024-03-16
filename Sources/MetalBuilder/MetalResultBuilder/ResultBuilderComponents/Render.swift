@@ -103,6 +103,8 @@ public struct Render: MetalBuilderComponent, Renderable {
     var vertexShader: VertexShader?
     var fragmentShader: FragmentShader?
     
+    var sampleCount: Int?
+    
     public var renderableData = RenderableData()
     
     func getLibrarySource() throws -> String{
@@ -357,6 +359,11 @@ public extension Render{
         var r = self
         r.instance_id = instance
         r.vertex_id = vertex
+        return r
+    }
+    func sampleCount(_ count: Int)->Render{
+        var r = self
+        r.sampleCount = count
         return r
     }
 }
