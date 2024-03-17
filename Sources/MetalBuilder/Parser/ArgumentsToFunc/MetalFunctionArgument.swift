@@ -128,7 +128,7 @@ public struct MetalBufferArgument{
     var forArgBuffer: Bool
     
     let passAs: PassBufferToMetal
-    let count: Int
+    let count: Int?
     
     let swiftType: Any.Type
     var swiftTypeToMetal: SwiftTypeToMetal{
@@ -153,7 +153,7 @@ public struct MetalBufferArgument{
         }
     }
     init(swiftType: Any.Type, space: String, type: String?, name: String, index: Int?,
-         passAs: PassBufferToMetal, count: Int,
+         passAs: PassBufferToMetal, count: Int?,
          forArgBuffer: Bool) {
         self.space = space
         self.type = type
@@ -199,7 +199,7 @@ public struct MetalBufferArgument{
         }
 
         self.init(swiftType: T.self, space: space, type: t, name: name, index: index,
-                  passAs: container.passAs, count: container.count!,
+                  passAs: container.passAs, count: container.count,
                   forArgBuffer: forArgBuffer)
     }
 }

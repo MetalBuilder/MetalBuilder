@@ -325,4 +325,9 @@ public extension MetalBuilderComponent where Self: Renderable{
         let cullMode = CullMode(mtlCullMode: mtlCullMode, frontFacingWinding: frontFacingWinding)
         return self.cullMode(MetalBinding<CullMode>.constant(cullMode))
     }
+    func sampleCount(_ count: Int)->Self{
+        var r = self
+        r.renderableData.sampleCount = count
+        return r
+    }
 }

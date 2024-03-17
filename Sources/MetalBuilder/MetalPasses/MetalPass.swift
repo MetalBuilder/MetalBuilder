@@ -26,11 +26,20 @@ public extension MetalPassInfo{
         
         //color attachments
         for key in renderableData.passColorAttachments.keys{
-            if let a = renderableData.passColorAttachments[key]?.descriptor{
+            if let a = renderableData.passColorAttachments[key]{
                 if a.texture == nil{
-                    a.texture = self.drawable?.texture
+                    if key != 0{
+                        let d = a.descriptor
+                        d.texture = self.drawable?.texture
+                        renderPassDescriptor.colorAttachments[key] = d
+                    }else{
+                        a.apply(
+                            toDescriptor: renderPassDescriptor.colorAttachments[key]
+                        )
+                    }
+                }else{
+                    renderPassDescriptor.colorAttachments[key] = a.descriptor
                 }
-                renderPassDescriptor.colorAttachments[key] = a
             }
         }
         
@@ -55,7 +64,12 @@ public extension MetalPassInfo{
         if let vp = renderableData.viewport{
             viewport = vp.wrappedValue
         }else{
-            let outTexture = renderPassDescriptor.colorAttachments[0].texture!
+            var outTexture: MTLTexture
+            if let t = renderPassDescriptor.colorAttachments[0].texture{
+                outTexture = t
+            }else{
+                outTexture = drawable!.texture
+            }
             
             viewport = MTLViewport(originX: 0.0, originY: 0.0,
                                    width:  Double(outTexture.width),

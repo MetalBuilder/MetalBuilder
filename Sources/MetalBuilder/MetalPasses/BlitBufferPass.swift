@@ -27,16 +27,16 @@ class BlitBufferPass: MetalPass{
             return
         }
         let elementSize = inBuffer.elementSize
-        let count: Int
+        
+        let size: Int
         if let c = component.count{
-            count = c
+            size = c.wrappedValue*elementSize
         }else{
-            count = inBuffer.count
+            size = inBuffer.mtlBuffer!.length// * elementSize
         }
         
-        let size = count*elementSize
-        let inOffset = component.sourceOffset*size
-        let outOffset = component.destinationOffset*size
+        let inOffset = inBuffer.offset.wrappedValue*elementSize
+        let outOffset = outBuffer.offset.wrappedValue*elementSize
 
         let blitBufferEncoder = commandBuffer.makeBlitCommandEncoder()
         blitBufferEncoder?.copy(from: inBuffer.mtlBuffer!, sourceOffset: inOffset,

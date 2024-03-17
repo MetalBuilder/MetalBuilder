@@ -58,10 +58,16 @@ func parse(library: inout String,
                             throw MetalBuilderParserError
                                 .wrongType("No type for buffer: `\(buf.name)`")
                         }
-                                
-                        referenceStructsDecls += buf.passAs
-                            .referenceStructDecl(type: type,
-                                                 count: buf.count)
+                        
+                        if let count = buf.count{
+                            referenceStructsDecls += buf.passAs
+                                .referenceStructDecl(type: type,
+                                                     count: count)
+                            
+                        }else{
+                            throw MetalBuilderParserError
+                                .noCount("No count set for buffer: `\(buf.name)`. Fixed count is required for passing as fixed array in struct.")
+                        }
                     }
                     
                     //change argument to struct

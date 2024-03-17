@@ -11,9 +11,7 @@ public struct BlitBuffer: MetalBuilderComponent{
     var inBuffer: BufferProtocol?
     var outBuffer: BufferProtocol?
     
-    var sourceOffset: Int = 0
-    var destinationOffset: Int = 0
-    var count: Int?
+    var count: MetalBinding<Int>?
     
     public init(){
     }
@@ -21,19 +19,23 @@ public struct BlitBuffer: MetalBuilderComponent{
 
 // chaining dunctions
 public extension BlitBuffer{
-    func source<T>(_ container: MTLBufferContainer<T>)->BlitBuffer{
+    func source<T>(_ container: MTLBufferContainer<T>,
+                   offset: MetalBinding<Int>? = nil)->BlitBuffer{
         var b = self
-        let buffer = Buffer(container: container, offset: .constant(0), index: 0)
+        let offset = offset ?? .constant(0)
+        let buffer = Buffer(container: container, offset: offset, index: 0)
         b.inBuffer = buffer
         return b
     }
-    func destination<T>(_ container: MTLBufferContainer<T>)->BlitBuffer{
+    func destination<T>(_ container: MTLBufferContainer<T>,
+                        offset: MetalBinding<Int>? = nil)->BlitBuffer{
         var b = self
-        let buffer = Buffer(container: container, offset: .constant(0), index: 0)
+        let offset = offset ?? .constant(0)
+        let buffer = Buffer(container: container, offset: offset, index: 0)
         b.outBuffer = buffer
         return b
     }
-    func count(count: Int)->BlitBuffer{
+    func count(_ count: MetalBinding<Int>)->BlitBuffer{
         var b = self
         b.count = count
         return b

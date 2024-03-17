@@ -250,6 +250,7 @@ public final class MTLBufferContainer<T>: BufferContainer{
     ///
     /// Use this method in ManualEncode block if you need to recreate the buffer in the container
     public func create(device: MTLDevice, count: Int? = nil, fromArray: [T]? = nil) throws{
+        
         self.device = device
         elementSize = MemoryLayout<T>.stride
         var count = count
@@ -260,6 +261,14 @@ public final class MTLBufferContainer<T>: BufferContainer{
         }else{
             self._count = count
         }
+        guard let count = count
+        else{
+            print("no count or array, skip creation!")
+            return
+        }
+        
+        self.count = count
+        
         let array: [T]?
         if let fromArray{
             array = fromArray
@@ -268,13 +277,11 @@ public final class MTLBufferContainer<T>: BufferContainer{
         }
         let length: Int
         if let array{
-            let c = count ?? array.count
-            self.count = c
-            length = elementSize! * c
+            length = elementSize! * count
             buffer = device.makeBuffer(bytes: array, length: length, options: bufferOptions)
             self.fromArray = nil
         }else{
-            length = elementSize!*count!
+            length = elementSize!*count
             buffer = device.makeBuffer(length: length, options: bufferOptions)
         }
         

@@ -22,7 +22,10 @@ class ClearRenderPass: MetalPass{
         if let texture = component.texture?.texture{
             renderPassDescriptor.colorAttachments[0].texture = texture
         }else{
-            renderPassDescriptor.colorAttachments[0].texture = passInfo.drawable!.texture
+//            renderPassDescriptor.colorAttachments[0].texture = passInfo.drawable!.texture
+//            print("sampleCount: ", passInfo.drawable!.texture.sampleCount)
+//            print("renderDesc: ", )
+//            renderPassDescriptor.colorAttachments[0].resolveTexture = passInfo.drawable!.texture
         }
         let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         renderEncoder.endEncoding()

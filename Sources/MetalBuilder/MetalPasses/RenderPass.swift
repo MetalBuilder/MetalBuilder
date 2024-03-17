@@ -84,7 +84,7 @@ final class RenderPass: MetalPass{
             renderPipelineDescriptor.colorAttachments[0].pixelFormat = renderInfo.pixelFormat
         }
         
-        if let sampleCount = component.sampleCount{
+        if let sampleCount = component.renderableData.sampleCount{
             renderPipelineDescriptor.rasterSampleCount = sampleCount
         }
         

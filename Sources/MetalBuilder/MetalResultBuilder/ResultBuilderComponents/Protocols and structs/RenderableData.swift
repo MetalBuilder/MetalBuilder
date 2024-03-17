@@ -36,6 +36,7 @@ public struct RenderableData{
     public var viewport: MetalBinding<MTLViewport>?
     public var depthBias: MetalBinding<DepthBias>?
     public var cullMode: MetalBinding<CullMode>?
+    public var sampleCount: Int?
 }
 
 public extension RenderableData{
@@ -62,6 +63,9 @@ public extension RenderableData{
         if let stencilReferenceValue = data.stencilReferenceValue{
             self.stencilReferenceValue = stencilReferenceValue
         }
+        if let sampleCount = data.sampleCount{
+            self.sampleCount = sampleCount
+        }
         pipelineColorAttachments = pipelineColorAttachments.merging(data.pipelineColorAttachments) { (current, _) in current }
     }
 }
@@ -75,33 +79,40 @@ public struct ColorAttachment{
     
     var descriptor: MTLRenderPassColorAttachmentDescriptor{
         let d = MTLRenderPassColorAttachmentDescriptor()
-        d.texture = texture?.texture
+        apply(toDescriptor: d)
+        return d
+    }
+    
+    func apply(toDescriptor desc: MTLRenderPassColorAttachmentDescriptor){
+        if let texture{
+            desc.texture = texture.texture
+        }
         if let loadAction = loadAction?.wrappedValue{
-            d.loadAction = loadAction
+            desc.loadAction = loadAction
         }
         if let storeAction = storeAction?.wrappedValue{
-            d.storeAction = storeAction
+            desc.storeAction = storeAction
         }
         if let clearColor = clearColor?.wrappedValue{
-            d.clearColor = clearColor
+            desc.clearColor = clearColor
         }
-        return d
     }
 }
 
 /// default color attachments
-public var defaultColorAttachments =
-    [0: ColorAttachment(texture: nil,
-                       loadAction: Binding<MTLLoadAction>(
-                        get: { .clear },
-                        set: { _ in }),
-                       storeAction: Binding<MTLStoreAction>(
-                        get: { .store },
-                        set: { _ in }),
-                       clearColor: Binding<MTLClearColor>(
-                        get: { MTLClearColorMake(0.0, 0.0, 0.0, 1.0)},
-                        set: { _ in } )
-                       )]
+public var defaultColorAttachments: [Int: ColorAttachment] =
+[:]
+//0: ColorAttachment(texture: nil,
+//                       loadAction: Binding<MTLLoadAction>(
+//                        get: { .clear },
+//                        set: { _ in }),
+//                       storeAction: Binding<MTLStoreAction>(
+//                        get: { .store },
+//                        set: { _ in }),
+//                       clearColor: Binding<MTLClearColor>(
+//                        get: { MTLClearColorMake(0.0, 0.0, 0.0, 1.0)},
+//                        set: { _ in } )
+//                       )]
 
 /// Stencil attachment
 public struct StencilAttachment{
