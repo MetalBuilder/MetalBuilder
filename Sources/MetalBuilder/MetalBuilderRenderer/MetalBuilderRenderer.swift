@@ -1,7 +1,7 @@
 import MetalKit
 import SwiftUI
 
-enum MetalBuilderRendererError: Error{
+public enum MetalBuilderRendererError: Error{
     case noCommandBuffer
 }
 
@@ -160,5 +160,28 @@ public extension MetalBuilderRenderer{
     }
     func resumeTime(){
         timer.backgroundResume()
+    }
+}
+
+public extension MetalBuilderRenderer{
+    func encode(commandBuffer: MTLCommandBuffer,
+                depthTexture: MTLTexture?,
+                renderPassDescriptor: MTLRenderPassDescriptor) throws{
+        
+        self.commandBuffer = commandBuffer
+        
+        for pass in renderData.passes{
+            
+            let passInfo = MetalPassInfo(getCommandBuffer: getCommandBuffer,
+                                         drawable: nil,
+                                         depthStencilTexture: depthTexture,
+                                         renderPassDescriptor: renderPassDescriptor){
+                try self.restartEncode(commandBuffer: self.commandBuffer,
+                                       drawable: nil)
+            }
+            
+            try pass.encode(passInfo: passInfo)
+                
+        }
     }
 }

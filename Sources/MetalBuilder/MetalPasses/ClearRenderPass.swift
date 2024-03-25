@@ -1,4 +1,6 @@
 
+import MetalKit
+
 class ClearRenderPass: MetalPass{
     
     let component: ClearRender
@@ -9,25 +11,27 @@ class ClearRenderPass: MetalPass{
         self.component = component
     }
     
-    func setup(renderInfo: GlobalRenderInfo) throws {
+    func setup(renderInfo: GlobalRenderInfo) throws{
+    }
+    func makeEncoder(passInfo: MetalPassInfo) throws -> MTLRenderCommandEncoder{
+        let commandBuffer = passInfo.getCommandBuffer()
+        guard let createdRenderPassEncoder = commandBuffer
+            .makeRenderCommandEncoder(renderableData: component.renderableData,
+                                      passInfo: passInfo)
+        else{
+            throw MetalBuilderRenderPassError
+                .noRenderEncoder(component.label)
+        }
+        return createdRenderPassEncoder
     }
     
     func encode(passInfo: MetalPassInfo) throws {
-        let commandBuffer = passInfo.getCommandBuffer()
-        let renderPassDescriptor =
-        passInfo.renderPassDescriptor
-        if let clearColor = component.clearColor{
-            renderPassDescriptor.colorAttachments[0].clearColor = clearColor
-        }
-        if let texture = component.texture?.texture{
-            renderPassDescriptor.colorAttachments[0].texture = texture
-        }else{
-//            renderPassDescriptor.colorAttachments[0].texture = passInfo.drawable!.texture
-//            print("sampleCount: ", passInfo.drawable!.texture.sampleCount)
-//            print("renderDesc: ", )
-//            renderPassDescriptor.colorAttachments[0].resolveTexture = passInfo.drawable!.texture
-        }
-        let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
-        renderEncoder.endEncoding()
+        
+        let (desc, _) = passInfo.getRenderPassDescriptorAndViewport(renderableData: component.renderableData)
+        
+        let renderPassEncoder = passInfo.getCommandBuffer()
+            .makeRenderCommandEncoder(descriptor: desc)
+        
+        renderPassEncoder?.endEncoding()
     }
 }

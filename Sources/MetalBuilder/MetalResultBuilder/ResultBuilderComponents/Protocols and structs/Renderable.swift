@@ -142,9 +142,9 @@ public extension MetalBuilderComponent where Self: Renderable{
     ///   - clearStencil: Binding to a value to use when clearing the depth attachment.
     /// - Returns: The Renderable component with the added color attachement.
     func depthAttachment(texture: MTLTextureContainer? = nil,
-                         loadAction: Binding<MTLLoadAction>? = nil,
-                         storeAction: Binding<MTLStoreAction>? = nil,
-                         clearDepth: Binding<Double>) -> Self{
+                         loadAction: MetalBinding<MTLLoadAction>? = nil,
+                         storeAction: MetalBinding<MTLStoreAction>? = nil,
+                         clearDepth: MetalBinding<Double>) -> Self{
         var r = self
         let depthAttachment = DepthAttachment(texture: texture,
                                               loadAction: loadAction,
@@ -164,17 +164,17 @@ public extension MetalBuilderComponent where Self: Renderable{
                           loadAction: MTLLoadAction? = nil,
                           storeAction: MTLStoreAction? = nil,
                           clearDepth: Double = 1) -> Self{
-        var _loadAction: Binding<MTLLoadAction>? = nil
-        var _storeAction: Binding<MTLStoreAction>? = nil
-        var _clearDepth: Binding<Double>
+        var _loadAction: MetalBinding<MTLLoadAction>? = nil
+        var _storeAction: MetalBinding<MTLStoreAction>? = nil
+        var _clearDepth: MetalBinding<Double>
         if let loadAction = loadAction {
-            _loadAction = Binding<MTLLoadAction>.constant(loadAction)
+            _loadAction = MetalBinding<MTLLoadAction>.constant(loadAction)
         }
         if let storeAction = storeAction {
-            _storeAction = Binding<MTLStoreAction>.constant(storeAction)
+            _storeAction = MetalBinding<MTLStoreAction>.constant(storeAction)
         }
         //if let clearDepth = clearDepth {
-            _clearDepth = Binding<Double>.constant(clearDepth)
+            _clearDepth = MetalBinding<Double>.constant(clearDepth)
         //}
         return depthAttachment(texture: texture,
                                loadAction: _loadAction,
@@ -194,9 +194,9 @@ public extension MetalBuilderComponent where Self: Renderable{
     /// unless the texture for this attachment is set with `toTexture` modifier.
     func colorAttachement(_ index: Int = 0,
                           texture: MTLTextureContainer? = nil,
-                          loadAction: Binding<MTLLoadAction>? = nil,
-                          storeAction: Binding<MTLStoreAction>? = nil,
-                          mtlClearColor: Binding<MTLClearColor>? = nil) -> Self{
+                          loadAction: MetalBinding<MTLLoadAction>? = nil,
+                          storeAction: MetalBinding<MTLStoreAction>? = nil,
+                          mtlClearColor: MetalBinding<MTLClearColor>? = nil) -> Self{
         var r = self
         //If texture for this attachment is already set (e.g. in toTexture modifier), then ignore nil
         var texture = texture
@@ -225,17 +225,17 @@ public extension MetalBuilderComponent where Self: Renderable{
                           loadAction: MTLLoadAction? = nil,
                           storeAction: MTLStoreAction? = nil,
                           mtlClearColor: MTLClearColor? = nil) -> Self{
-        var _loadAction: Binding<MTLLoadAction>? = nil
-        var _storeAction: Binding<MTLStoreAction>? = nil
-        var _clearColor: Binding<MTLClearColor>? = nil
+        var _loadAction: MetalBinding<MTLLoadAction>? = nil
+        var _storeAction: MetalBinding<MTLStoreAction>? = nil
+        var _clearColor: MetalBinding<MTLClearColor>? = nil
         if let loadAction = loadAction {
-            _loadAction = Binding<MTLLoadAction>.constant(loadAction)
+            _loadAction = MetalBinding<MTLLoadAction>.constant(loadAction)
         }
         if let storeAction = storeAction {
-            _storeAction = Binding<MTLStoreAction>.constant(storeAction)
+            _storeAction = MetalBinding<MTLStoreAction>.constant(storeAction)
         }
         if let clearColor = mtlClearColor {
-            _clearColor = Binding<MTLClearColor>.constant(clearColor)
+            _clearColor = MetalBinding<MTLClearColor>.constant(clearColor)
         }
         return colorAttachement(index,
                                 texture: texture,

@@ -12,6 +12,18 @@ extension MetalPass{
 }
 
 public struct MetalPassInfo {
+    init(getCommandBuffer: @escaping () -> MTLCommandBuffer,
+                drawable: CAMetalDrawable? = nil,
+                depthStencilTexture: MTLTexture? = nil,
+                renderPassDescriptor: MTLRenderPassDescriptor,
+                restartEncode: @escaping () throws -> ()) {
+        self.getCommandBuffer = getCommandBuffer
+        self.drawable = drawable
+        self.depthStencilTexture = depthStencilTexture
+        self.renderPassDescriptor = renderPassDescriptor
+        self.restartEncode = restartEncode
+    }
+    
     public let getCommandBuffer: ()->MTLCommandBuffer
     public let drawable: CAMetalDrawable?
     let depthStencilTexture: MTLTexture?

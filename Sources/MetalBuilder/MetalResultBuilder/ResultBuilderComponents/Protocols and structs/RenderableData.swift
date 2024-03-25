@@ -73,9 +73,9 @@ public extension RenderableData{
 /// pass color attachment with bindings
 public struct ColorAttachment{
     public var texture: MTLTextureContainer?
-    public var loadAction: Binding<MTLLoadAction>?
-    public var storeAction: Binding<MTLStoreAction>?
-    public var clearColor: Binding<MTLClearColor>?
+    public var loadAction: MetalBinding<MTLLoadAction>?
+    public var storeAction: MetalBinding<MTLStoreAction>?
+    public var clearColor: MetalBinding<MTLClearColor>?
     
     var descriptor: MTLRenderPassColorAttachmentDescriptor{
         let d = MTLRenderPassColorAttachmentDescriptor()
@@ -153,9 +153,9 @@ extension RenderableData{
 /// Depth attachment
 public struct DepthAttachment{
     public var texture: MTLTextureContainer?
-    public var loadAction: Binding<MTLLoadAction>?
-    public var storeAction: Binding<MTLStoreAction>?
-    public var clearDepth: Binding<Double>?
+    public var loadAction: MetalBinding<MTLLoadAction>?
+    public var storeAction: MetalBinding<MTLStoreAction>?
+    public var clearDepth: MetalBinding<Double>?
     
     public var descriptor: MTLRenderPassDepthAttachmentDescriptor{
         let d = MTLRenderPassDepthAttachmentDescriptor()
