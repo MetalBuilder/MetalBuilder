@@ -19,25 +19,6 @@ extension FragmentShaderError: LocalizedError{
 
 import SwiftUI
 
-extension FragmentShader: Hashable{
-    var hv: String{
-        "\(hashValue)".trimmingCharacters(in: .punctuationCharacters)
-    }
-    public static func == (lhs: FragmentShader, rhs: FragmentShader) -> Bool {
-           lhs._body           == rhs._body
-        && lhs._source         == rhs._source
-        && lhs.fragmentOutFields == rhs.fragmentOutFields
-        && lhs.fragmentOutType == rhs.fragmentOutType
-    }
-       
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(_body)
-        hasher.combine(_source)
-        hasher.combine(fragmentOutFields)
-        hasher.combine(fragmentOutType)
-    }
-}
-
 /// Fragment Shader that you pass to a Render component
 ///
 /// All the uniforms that are passed to the Render component will be also available
@@ -81,7 +62,7 @@ public struct FragmentShader: ShaderProtocol{
 //            throw FragmentShaderError
 //                .noFragmentOut(label)
         }
-        let fragmentOut = "\(label)FragmentOut\(self.hv)"
+        let fragmentOut = "\(label)FragmentOut"
         let decl = """
                    struct \(fragmentOut){
                      \(fragmentOutFields)
@@ -105,11 +86,10 @@ public struct FragmentShader: ShaderProtocol{
                 .noVertexOut(label)
         }
         let (type, decl) = try getFragmentOut(label: label)
-        let fragmentName = fragmentNameFromLabel(label, fragment: self)
+        let fragmentName = fragmentNameFromLabel(label)
         
         return """
-                \(decl)
-                fragment \(type) \(fragmentName)(\(vertexOut) in [[stage_in]]){
+                \(decl) fragment \(type) \(fragmentName)(\(vertexOut) in [[stage_in]]){
                 \(type) out;
                 \(_body)
                 return out;
