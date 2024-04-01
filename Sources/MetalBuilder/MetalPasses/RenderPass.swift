@@ -92,9 +92,9 @@ final class RenderPass: MetalPass{
             renderPiplineState = piplineSetupClosure(renderInfo.device, libraryContainer!.library!)
         }else{
             let vertexFunction = libraryContainer!.library!
-                .makeFunction(name: vertexNameFromLabel(component.label))!
+                .makeFunction(name: vertexNameFromLabel(component.label, vertex: component.vertexShader!))!
             let fragmentFunction = libraryContainer!.library!
-                .makeFunction(name: fragmentNameFromLabel(component.label))!
+                .makeFunction(name: fragmentNameFromLabel(component.label, fragment: component.fragmentShader!))!
             renderPipelineDescriptor.vertexFunction = vertexFunction
             renderPipelineDescriptor.fragmentFunction = fragmentFunction
             renderPiplineState =
@@ -212,7 +212,7 @@ final class RenderPass: MetalPass{
             guard let texture = tex.container.texture
             else{
                 throw MetalBuilderRenderPassError
-                    .textureIsNil(tex.index, vertexNameFromLabel(component.label))
+                    .textureIsNil(tex.index, vertexNameFromLabel(component.label, vertex: component.vertexShader!))
             }
             renderPassEncoder.setVertexTexture(texture, index: tex.index)
         }
@@ -224,7 +224,7 @@ final class RenderPass: MetalPass{
             guard let texture = tex.container.texture
             else{
                 throw MetalBuilderRenderPassError
-                    .textureIsNil(tex.index, fragmentNameFromLabel(component.label))
+                    .textureIsNil(tex.index, fragmentNameFromLabel(component.label, fragment: component.fragmentShader!))
             }
             renderPassEncoder.setFragmentTexture(texture, index: tex.index)
         }

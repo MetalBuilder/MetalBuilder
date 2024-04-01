@@ -16,6 +16,23 @@ extension VertexShaderError: LocalizedError{
     }
 }
 
+extension VertexShader: Hashable{
+    var hv: String{
+        "\(hashValue)".trimmingCharacters(in: .punctuationCharacters)
+    }
+    public static func == (lhs: VertexShader, rhs: VertexShader) -> Bool {
+           lhs._body           == rhs._body
+        && lhs._source         == rhs._source
+        && lhs.vertexOutFields == rhs.vertexOutFields
+    }
+       
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(_body)
+        hasher.combine(_source)
+        hasher.combine(vertexOutFields)
+    }
+}
+
 public struct VertexShader: ShaderProtocol{
     
     public var argumentsContainer = ArgumentsContainer(stages: .vertex)
@@ -31,7 +48,7 @@ public struct VertexShader: ShaderProtocol{
     public var _source: String?
     
     func vertexOut(label: String) throws -> (String, String){//VertexOut (Type, decl)
-        let vertexOut = "\(label)VertexOut"
+        let vertexOut = "\(label)VertexOut\(self.hv)"
         let decl = """
                    struct \(vertexOut){
                      \(vertexOutFields)
@@ -50,7 +67,7 @@ public struct VertexShader: ShaderProtocol{
                 .noBody(label)
         }
         let (type, decl) = try vertexOut(label: label)
-        let vertexName = vertexNameFromLabel(label)
+        let vertexName = vertexNameFromLabel(label, vertex: self)
         return ("""
                 \(decl)
                 vertex \(type) \(vertexName)(){\(type) out;

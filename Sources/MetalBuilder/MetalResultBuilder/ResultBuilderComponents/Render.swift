@@ -27,11 +27,11 @@ public typealias AdditionalEncodeClosureForRender = (MTLRenderCommandEncoder)->(
 public typealias AdditionalPiplineSetupClosureForRender = (MTLRenderPipelineState)->()
 public typealias PiplineSetupClosureForRender = (MTLDevice, MTLLibrary)->(MTLRenderPipelineState)
 
-func fragmentNameFromLabel(_ label: String) -> String{
-    "\(label)FragmentShader"
+func fragmentNameFromLabel(_ label: String, fragment: FragmentShader) -> String{
+    "\(label)FragmentShader\(fragment.hv)"
 }
-func vertexNameFromLabel(_ label: String) -> String{
-    "\(label)VertexShader"
+func vertexNameFromLabel(_ label: String, vertex: VertexShader) -> String{
+    "\(label)VertexShader\(vertex.hv)"
 }
 
 /// The component for rendering primitives.
@@ -153,10 +153,10 @@ public struct Render: MetalBuilderComponent, Renderable {
         
         var argData = try vertexShader
             .argumentsContainer
-            .getData(metalFunction: .vertex(vertexNameFromLabel(label)))
+            .getData(metalFunction: .vertex(vertexNameFromLabel(label, vertex: vertexShader)))
         let argData1 = try fragmentShader
             .argumentsContainer
-            .getData(metalFunction: .fragment(fragmentNameFromLabel(label)))
+            .getData(metalFunction: .fragment(fragmentNameFromLabel(label, fragment: fragmentShader)))
         argData.appendContents(of: argData1)
         return (argData, source)
     }
