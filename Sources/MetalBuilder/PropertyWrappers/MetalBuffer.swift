@@ -306,24 +306,39 @@ public final class MTLBufferContainer<T>: BufferContainer{
 }
 //load and store data
 public extension MTLBufferContainer{
-    func getData(count: Int? = nil) -> Data{
+    func getData(count: Int? = nil) -> Data?{
+        elementSize = MemoryLayout<T>.stride
         var count = count
         if count == nil{
             count = self.count
         }
-        let length = elementSize!*count!
-        let data = Data(bytes: buffer!.contents(), count: length)
+        
+        guard let count, let elementSize, let buffer
+        else{ return nil }
+            
+        let length = elementSize*count
+        let data = Data(bytes: buffer.contents(), count: length)
         return data
     }
     
-    func load(data: Data, count: Int? = nil){
+    func load(data: Data, count: Int? = nil, device: MTLDevice?=nil){
+        elementSize = MemoryLayout<T>.stride
         var count = count
         if count == nil{
             count = self.count
         }
-        let length = elementSize!*count!
+        
+        var d = self.device
+        if d == nil{
+            d = device
+        }
+        
+        guard let count, let elementSize, let d
+        else{ return }
+        
+        let length = elementSize*count
         data.withUnsafeBytes{ bts in
-            buffer = device!.makeBuffer(bytes: bts.baseAddress!, length: length)
+            buffer = d.makeBuffer(bytes: bts.baseAddress!, length: length)!
             if let buffer = buffer{
                 pointer = buffer.contents().bindMemory(to: T.self, capacity: length)
             }

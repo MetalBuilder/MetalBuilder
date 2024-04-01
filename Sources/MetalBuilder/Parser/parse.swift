@@ -117,7 +117,9 @@ func parse(library: inout String,
         try addArgumentsDeclaration(of: funcAndArg.arguments,
                            toHeaderOf: funcAndArg.function, in: &library)
     }
+    #if DEBUG
     print(library)
+    #endif
 }
 
 extension Array where Element: Equatable{

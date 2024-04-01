@@ -42,10 +42,12 @@ public struct Compute: MetalBuilderComponent, ReceiverOfArgumentsContainer{
     func addComputeKernelArguments(addGridCheck: Bool) throws -> String{
         guard bodySource != ""
         else { return librarySource }
-            
-        var gridCheck = ""
+        
+        var bodySource = bodySource
+        
         if addGridCheck{
-            gridCheck = try gridFit!.gridCheck
+            let gridCheck = try gridFit!.gridCheck
+            bodySource = gridCheck + bodySource
         }
         
         let arg = try gridFit!
@@ -57,7 +59,7 @@ public struct Compute: MetalBuilderComponent, ReceiverOfArgumentsContainer{
             strArgs = ", " + strArgs
         }
         let kernelDecl = "kernel void \(kernel) (\(arg)\(strArgs)){"
-        return librarySource + kernelDecl + gridCheck + bodySource + "}"
+        return librarySource + kernelDecl + bodySource + "}"
     }
     mutating func setupGrid() throws{
         if gridFit == nil{

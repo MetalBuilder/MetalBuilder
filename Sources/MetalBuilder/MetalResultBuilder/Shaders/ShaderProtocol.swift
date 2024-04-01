@@ -1,6 +1,6 @@
 import SwiftUI
 
-public protocol ShaderProtocol: ReceiverOfArgumentsContainer {
+public protocol ShaderProtocol: ReceiverOfArgumentsContainer, Hashable {
     var _body: String? { get set}
     var _source: String? { get set }
 }
