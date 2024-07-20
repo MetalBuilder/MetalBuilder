@@ -1,6 +1,6 @@
 import SwiftUI
 
-public protocol ShaderProtocol: ReceiverOfArgumentsContainer, Hashable {
+public protocol ShaderProtocol: ReceiverOfArgumentsContainer {
     var _body: String? { get set}
     var _source: String? { get set }
 }
@@ -37,7 +37,7 @@ extension InternalShaderProtocol{
         sh.bufsAndArgs.append((buf, argument))
         return sh
     }
-    func _bytes<T>(_ binding: Binding<T>, argument: MetalBytesArgument) -> ShaderProtocol{
+    func _bytes<T>(_ binding: MetalBinding<T>, argument: MetalBytesArgument) -> ShaderProtocol{
         var sh = self
         let bytes = Bytes(binding: binding, index: 0)
         sh.bytesAndArgs.append((bytes, argument))
@@ -45,7 +45,7 @@ extension InternalShaderProtocol{
     }
     func _bytes<T>(_ binding: MetalBinding<T>, space: String = "constant", type: String?=nil, name: String?=nil, index: Int?=nil)->ShaderProtocol{
         let argument = MetalBytesArgument(binding: binding, space: space, type: type, name: name)
-        return _bytes(binding.binding, argument: argument)
+        return _bytes(binding, argument: argument)
     }
     func _texture(_ container: MTLTextureContainer, argument: MetalTextureArgument) -> ShaderProtocol{
         var sh = self

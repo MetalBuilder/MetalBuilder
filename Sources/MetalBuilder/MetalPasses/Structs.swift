@@ -93,7 +93,7 @@ struct RawBytes: BytesProtocol{
 }
 
 struct Bytes<T>: BytesProtocol{
-    let binding: Binding<T>
+    let binding: MetalBinding<T>
     var index: Int
     
     func encode(encoder: (UnsafeRawPointer, Int, Int)->()){

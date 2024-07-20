@@ -257,6 +257,8 @@ public final class MTLBufferContainer<T>: BufferContainer{
         if count == nil {
             if fromArray == nil{
                 count = self.count
+            }else{
+                count = fromArray!.count
             }
         }else{
             self._count = count
@@ -321,7 +323,7 @@ public extension MTLBufferContainer{
         return data
     }
     
-    func load(data: Data, count: Int? = nil, device: MTLDevice?=nil){
+    func load(data: Data, count: Int? = nil, device: MTLDevice?=nil, create: Bool=true){
         elementSize = MemoryLayout<T>.stride
         var count = count
         if count == nil{
@@ -337,10 +339,23 @@ public extension MTLBufferContainer{
         else{ return }
         
         let length = elementSize*count
-        data.withUnsafeBytes{ bts in
-            buffer = d.makeBuffer(bytes: bts.baseAddress!, length: length)!
-            if let buffer = buffer{
-                pointer = buffer.contents().bindMemory(to: T.self, capacity: length)
+        if !create{
+//            for i in 0..<count{
+//                data.copyBytes(
+//                    to: self.buffer!.contents()
+//                        .advanced(by: <#T##Int#>)
+//                        .assumingMemoryBound(to: UInt8.self),
+//                    
+//                        count: length
+//                )
+//            }
+                
+        }else{
+            data.withUnsafeBytes{ bts in
+                buffer = d.makeBuffer(bytes: bts.baseAddress!, length: length)!
+                if let buffer = buffer{
+                    pointer = buffer.contents().bindMemory(to: T.self, capacity: length)
+                }
             }
         }
     }

@@ -24,28 +24,30 @@ public final class MetalState<T>{
 @propertyWrapper
 public struct MetalBinding<T>{
     public var wrappedValue: T{
-        get { binding.wrappedValue }
-        nonmutating set { binding.wrappedValue = newValue }
+        get { get() }
+        nonmutating set { set(newValue) }
     }
     public var projectedValue: Self { self }
     
-    public let binding: Binding<T>
+    public let get: ()->T
+    public let set: (T)->()
     
     var metalType: String?
     var metalName: String?
     
     public init(get: @escaping ()->T, set: @escaping (T)->() = {_ in },
                 metalType: String?=nil, metalName: String?=nil){
-        self.binding = Binding(get: get, set: set)
+        self.get = get
+        self.set = set
         self.metalType = metalType
         self.metalName = metalName
     }
-    public init(binding: Binding<T>,
-                metalType: String?=nil, metalName: String?=nil){
-        self.binding = binding
-        self.metalType = metalType
-        self.metalName = metalName
-    }
+//    public init(binding: Binding<T>,
+//                metalType: String?=nil, metalName: String?=nil){
+//        self.binding = binding
+//        self.metalType = metalType
+//        self.metalName = metalName
+//    }
     public static func constant(_ value: T, metalType: String? = nil, metalName: String? = nil) -> MetalBinding<T>{
         return MetalBinding<T>(get: { value },
                                set: {_ in },

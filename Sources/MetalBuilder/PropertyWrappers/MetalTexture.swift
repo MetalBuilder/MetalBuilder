@@ -149,18 +149,21 @@ public extension MTLTextureContainer{
 
 //load and store data
 public extension MTLTextureContainer{
-    func getData<T:SIMD >(type: T.Type, region: MTLRegion?=nil)->Data{
+    func getData<T:SIMD >(type: T.Type, region: MTLRegion?=nil)->Data?{
+        guard let texture
+        else{ return nil }
+        
         var region = region
         if region == nil{
             region = MTLRegion(origin: MTLOrigin(x: 0, y: 0, z: 0),
-                               size: MTLSize(width: texture!.width,
-                                             height: texture!.height, depth: texture!.depth))
+                               size: MTLSize(width: texture.width,
+                                             height: texture.height, depth: texture.depth))
         }
         let bytesPerRow = MemoryLayout<T>.size * region!.size.width
         let bytesPerImage = bytesPerRow*region!.size.height * region!.size.depth
         var array = [T](repeating: T.init(), count: bytesPerImage)
         array.withUnsafeMutableBytes{ bts in
-            texture!.getBytes(bts.baseAddress!,
+            texture.getBytes(bts.baseAddress!,
                              bytesPerRow: bytesPerRow,
                              from: region!,
                              mipmapLevel: 0)
@@ -203,6 +206,8 @@ public struct TextureDescriptor{
     
     public var mipmapLevelCount: Int = 1
     
+    public var sampleCount: Int = 1
+    
     var manualCreation = false
     
     public init() {}
@@ -216,6 +221,7 @@ public struct TextureDescriptor{
         d.arrayLength = arrayLength
         d.usage = usage
         d.storageMode = storageMode
+        d.sampleCount = sampleCount
         
         //Determine size
         var s: MTLSize?
@@ -251,6 +257,11 @@ public extension TextureDescriptor{
     func type(_ type: MTLTextureType) -> TextureDescriptor {
         var d = self
         d.type = type
+        return d
+    }
+    func sampleCount(_ n: Int) -> TextureDescriptor {
+        var d = self
+        d.sampleCount = n
         return d
     }
     func arrayLength(_ n: Int) -> TextureDescriptor {

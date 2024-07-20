@@ -26,10 +26,13 @@ public final class MetalBuilderRenderingContext{
     
     @MetalState public var firstFrame = true
     
+    public let device: MTLDevice
+    
     let commandQueue: MTLCommandQueue
     
     init(commandQueue: MTLCommandQueue){
         self.commandQueue = commandQueue
+        self.device = commandQueue.device
     }
     
     func updateViewportToDeviceTransform(){

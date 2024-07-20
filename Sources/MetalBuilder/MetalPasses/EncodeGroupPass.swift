@@ -6,14 +6,14 @@ class EncodeGroupPass: MetalPass{
     
     var libraryContainer: LibraryContainer?
     let passes: [MetalPass]
-    let repeating: Binding<Int>
-    let active: Binding<Bool>
+    let repeating: MetalBinding<Int>
+    let active: MetalBinding<Bool>
     let once: Bool
     
     init(_ passes: [MetalPass], component: EncodeGroup){
         self.passes = passes
-        self.repeating = component.repeating.binding
-        self.active = component.active.binding
+        self.repeating = component.repeating
+        self.active = component.active
         self.once = component.once
     }
     func setup(renderInfo: GlobalRenderInfo) throws{

@@ -187,13 +187,50 @@ public extension MetalBuilderComponent where Self: Renderable{
     ///   - texture: Texture to use in the attachement.
     ///   - loadAction: Binding to a load action value.
     ///   - storeAction: Binding to a store action value.
-    ///   - clearColor: Binding to a clear color value (MTLClearColor).
+    ///   - mtlClearColor: Binding to a clear color value.
     /// - Returns: The Renderable component with the added color attachement.
     ///
     /// If the texture for the attachement is ommited then the drawable texure will be used,
     /// unless the texture for this attachment is set with `toTexture` modifier.
     func colorAttachement(_ index: Int = 0,
                           texture: MTLTextureContainer? = nil,
+                          resolveTexture: MTLTextureContainer? = nil,
+                          loadAction: MetalBinding<MTLLoadAction>? = nil,
+                          storeAction: MetalBinding<MTLStoreAction>? = nil,
+                          clearColor: MetalBinding<Color>? = nil) -> Self{
+        var r = self
+        //If texture for this attachment is already set (e.g. in toTexture modifier), then ignore nil
+        var texture = texture
+        if texture == nil{
+            if let existingTexture = r.renderableData.passColorAttachments[index]?.texture{
+                texture = existingTexture
+            }
+        }
+        
+        let mtlClearColor = clearColor?.getMTLClearColorBinding()
+        
+        let colorAttachement = ColorAttachment(texture: texture,
+                                               resolveTexture: resolveTexture,
+                                               loadAction: loadAction,
+                                               storeAction: storeAction,
+                                               clearColor: mtlClearColor)
+        r.renderableData.passColorAttachments[index] = colorAttachement
+        return r
+    }
+    /// Adds a color attachment to the Renderable component.
+    /// - Parameters:
+    ///   - index: Index of the color attachment. 0 if unspecified.
+    ///   - texture: Texture to use in the attachement.
+    ///   - loadAction: Binding to a load action value.
+    ///   - storeAction: Binding to a store action value.
+    ///   - mtlClearColor: Binding to a clear color value (MTLClearColor).
+    /// - Returns: The Renderable component with the added color attachement.
+    ///
+    /// If the texture for the attachement is ommited then the drawable texure will be used,
+    /// unless the texture for this attachment is set with `toTexture` modifier.
+    func colorAttachement(_ index: Int = 0,
+                          texture: MTLTextureContainer? = nil,
+                          resolveTexture: MTLTextureContainer? = nil,
                           loadAction: MetalBinding<MTLLoadAction>? = nil,
                           storeAction: MetalBinding<MTLStoreAction>? = nil,
                           mtlClearColor: MetalBinding<MTLClearColor>? = nil) -> Self{
@@ -206,6 +243,7 @@ public extension MetalBuilderComponent where Self: Renderable{
             }
         }
         let colorAttachement = ColorAttachment(texture: texture,
+                                               resolveTexture: resolveTexture,
                                                loadAction: loadAction,
                                                storeAction: storeAction,
                                                clearColor: mtlClearColor)
@@ -222,6 +260,7 @@ public extension MetalBuilderComponent where Self: Renderable{
     /// - Returns: The Renderable component with the added color attachement.
     func colorAttachement(_ index: Int = 0,
                           texture: MTLTextureContainer? = nil,
+                          resolveTexture: MTLTextureContainer? = nil,
                           loadAction: MTLLoadAction? = nil,
                           storeAction: MTLStoreAction? = nil,
                           mtlClearColor: MTLClearColor? = nil) -> Self{
@@ -239,6 +278,7 @@ public extension MetalBuilderComponent where Self: Renderable{
         }
         return colorAttachement(index,
                                 texture: texture,
+                                resolveTexture: resolveTexture,
                                 loadAction: _loadAction,
                                 storeAction: _storeAction,
                                 mtlClearColor: _clearColor)
@@ -253,6 +293,7 @@ public extension MetalBuilderComponent where Self: Renderable{
     /// - Returns: The Renderable component with the added color attachement.
     func colorAttachement(_ index: Int = 0,
                           texture: MTLTextureContainer? = nil,
+                          resolveTexture: MTLTextureContainer? = nil,
                           loadAction: MTLLoadAction? = nil,
                           storeAction: MTLStoreAction? = nil,
                           clearColor: Color) -> Self{
@@ -269,6 +310,7 @@ public extension MetalBuilderComponent where Self: Renderable{
         //}
         return colorAttachement(index,
                                 texture: texture,
+                                resolveTexture: resolveTexture,
                                 loadAction: loadAction,
                                 storeAction: storeAction,
                                 mtlClearColor: _clearColor)
@@ -329,5 +371,31 @@ public extension MetalBuilderComponent where Self: Renderable{
         var r = self
         r.renderableData.sampleCount = count
         return r
+    }
+}
+
+public extension MetalBinding<Color>{
+    func getMTLClearColorBinding(defaultColor: MTLClearColor = .init()) -> MetalBinding<MTLClearColor>{
+        MetalBinding<MTLClearColor>.init {
+            self.wrappedValue.mtlClearColor ?? defaultColor
+        } set: { mtlClearColor in
+            
+        }
+
+    }
+}
+
+public extension Color{
+    var mtlClearColor: MTLClearColor?{
+        var _clearColor: MTLClearColor?
+        if let cgC = UIColor(self).cgColor.components{
+            _clearColor = MTLClearColor(red:   cgC[0],
+                                        green: cgC[1],
+                                        blue:  cgC[2],
+                                        alpha: cgC[3])
+        }else{
+            print("Could not get color components for color: ", self)
+        }
+        return _clearColor
     }
 }

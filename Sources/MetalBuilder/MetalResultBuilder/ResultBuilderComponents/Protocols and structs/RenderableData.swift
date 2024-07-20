@@ -73,6 +73,7 @@ public extension RenderableData{
 /// pass color attachment with bindings
 public struct ColorAttachment{
     public var texture: MTLTextureContainer?
+    public var resolveTexture: MTLTextureContainer?
     public var loadAction: MetalBinding<MTLLoadAction>?
     public var storeAction: MetalBinding<MTLStoreAction>?
     public var clearColor: MetalBinding<MTLClearColor>?
@@ -86,6 +87,9 @@ public struct ColorAttachment{
     func apply(toDescriptor desc: MTLRenderPassColorAttachmentDescriptor){
         if let texture{
             desc.texture = texture.texture
+        }
+        if let resolveTexture{
+            desc.resolveTexture = resolveTexture.texture
         }
         if let loadAction = loadAction?.wrappedValue{
             desc.loadAction = loadAction
@@ -143,6 +147,9 @@ extension RenderableData{
         [
             self.passColorAttachments.compactMap{
                 $0.value.texture
+            },
+            self.passColorAttachments.compactMap{
+                $0.value.resolveTexture
             },
             [self.passDepthAttachment?.texture].compactMap{ $0 },
             [self.passStencilAttachment?.texture].compactMap{ $0 }

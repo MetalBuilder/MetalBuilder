@@ -86,24 +86,24 @@ public extension ReceiverOfArgumentsContainer{
                            fitThreads: fitThreads, 
                            gridScale: gridScale)
     }
-    func bytes<T>(_ binding: Binding<T>,
+    func bytes<T>(_ binding: MetalBinding<T>,
                          index: Int)->Self{
         var c = self
         c.argumentsContainer.bytes(binding, index: index)
         return c
     }
-    func bytes<T>(_ binding: Binding<T>,
+    func bytes<T>(_ binding: MetalBinding<T>,
                          argument: MetalBytesArgument)->Self{
         var c = self
         c.argumentsContainer.bytes(binding, argument: argument)
         return c
     }
-    func bytes<T>(_ binding: MetalBinding<T>,
-                         argument: MetalBytesArgument)->Self{
-        var c = self
-        c.argumentsContainer.bytes(binding.binding, argument: argument)
-        return c
-    }
+//    func bytes<T>(_ binding: MetalBinding<T>,
+//                         argument: MetalBytesArgument)->Self{
+//        var c = self
+//        c.argumentsContainer.bytes(binding.binding, argument: argument)
+//        return c
+//    }
     /// Passes a value to the compute kernel of a Compute component.
     /// - Parameters:
     ///   - binding: MetalBinding value created with the`@MetalState` property wrapper.
@@ -140,18 +140,18 @@ public extension ReceiverOfArgumentsContainer{
     /// This method adds a value to the compute kernel of a Compute component and parses the Metal library code,
     /// automatically adding an argument declaration to the compute kernel.
     /// Use this modifier if you do not want to declare the function's argument manually.
-    func bytes<T>(_ binding: Binding<T>,
-                         type: String?=nil,
-                         name: String,
-                         index: Int?=nil)->Self{
-        let metalBinding = MetalBinding(binding: binding, metalType: type, metalName: name)
-        let argument = MetalBytesArgument(binding: metalBinding,
-                                          space: "constant",
-                                          type: type,
-                                          name: name,
-                                          index: index)
-        return bytes(binding, argument: argument)
-    }
+//    func bytes<T>(_ binding: Binding<T>,
+//                         type: String?=nil,
+//                         name: String,
+//                         index: Int?=nil)->Self{
+//        let metalBinding = MetalBinding(binding: binding, metalType: type, metalName: name)
+//        let argument = MetalBytesArgument(binding: metalBinding,
+//                                          space: "constant",
+//                                          type: type,
+//                                          name: name,
+//                                          index: index)
+//        return bytes(binding, argument: argument)
+//    }
     func uniforms(_ uniforms: UniformsContainer,
                          name: String?=nil) -> Self{
         var c = self

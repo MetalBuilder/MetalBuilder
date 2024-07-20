@@ -156,11 +156,11 @@ extension ArgumentsContainer{
                                                           argument: argument)
         self.separateShaderArguments.append(arg)
     }
-    mutating func bytes<T>(_ binding: Binding<T>, index: Int){
+    mutating func bytes<T>(_ binding: MetalBinding<T>, index: Int){
         let bytes = Bytes(binding: binding, index: index)
         self.buffersAndBytesContainer.bytes.append(bytes)
     }
-    mutating func bytes<T>(_ binding: Binding<T>,
+    mutating func bytes<T>(_ binding: MetalBinding<T>,
                   argument: MetalBytesArgument){
         checkForSameNames(name: argument.name)
         let bytes = Bytes(binding: binding, index: 0)
