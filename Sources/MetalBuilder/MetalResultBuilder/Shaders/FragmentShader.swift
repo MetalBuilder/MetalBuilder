@@ -88,14 +88,28 @@ public struct FragmentShader: ShaderProtocol{
         let (type, decl) = try getFragmentOut(label: label)
         let fragmentName = fragmentNameFromLabel(label)
         
+        var args = "\(vertexOut) in [[stage_in]]"
+        
         return """
-                \(decl) fragment \(type) \(fragmentName)(\(vertexOut) in [[stage_in]]){
+                \(decl) fragment \(type) \(fragmentName)(\(args)){
                 \(type) out;
                 \(_body)
                 return out;
                 }
                """
     }
+    
+//    func fragmentArguments(_ bodyCode: String) -> String{
+//        fragmentShaderArgumentsDict
+//            .compactMap{ key, value in
+//                if isThereIdentifierInCode(code: bodyCode,
+//                                           identifier: key){
+//                    return "\(value.0) \(key) [[\(value.1)]]"
+//                }else{
+//                    return nil
+//                }
+//            }.joined(separator: ", ")
+//    }
 }
 /*
 //FragmentShader's wrappers for ShaderProtocol modifiers

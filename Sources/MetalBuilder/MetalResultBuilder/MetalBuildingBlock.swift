@@ -20,5 +20,9 @@ public extension MetalBuildingBlock{
     }
     func startup(device: MTLDevice){
     }
+    
+    var helpers: String { "" }
+    var librarySource: String { "" }
+    var compileOptions: MetalBuilderCompileOptions? { nil }
 }
 

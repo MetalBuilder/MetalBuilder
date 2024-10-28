@@ -182,8 +182,9 @@ public struct Render: MetalBuilderComponent, Renderable {
         
         let fragmentArgumentsDict: [String: MetalFunctionArgument] =
         [
-            "primitive_id"   : .custom("uint primitive_id [[primitive_id]]"),
-            "point_coord"   : .custom("float2 point_coord [[point_coord]]")
+            "primitive_id"     : .custom("uint primitive_id [[primitive_id]]"),
+            "point_coord"      : .custom("float2 point_coord [[point_coord]]"),
+            "barycentric_coord": .custom("float3 barycentric_coord [[barycentric_coord]]")
         ]
         for arg in fragmentArgumentsDict{
             if isThereIdentifierInCode(code: source,

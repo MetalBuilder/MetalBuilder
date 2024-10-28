@@ -13,10 +13,10 @@ extension MetalPass{
 
 public struct MetalPassInfo {
     init(getCommandBuffer: @escaping () -> MTLCommandBuffer,
-                drawable: CAMetalDrawable? = nil,
-                depthStencilTexture: MTLTexture? = nil,
-                renderPassDescriptor: MTLRenderPassDescriptor,
-                restartEncode: @escaping () throws -> ()) {
+         drawable: CAMetalDrawable? = nil,
+         depthStencilTexture: MTLTexture? = nil,
+         renderPassDescriptor: MTLRenderPassDescriptor,
+         restartEncode: @escaping () throws -> ()) {
         self.getCommandBuffer = getCommandBuffer
         self.drawable = drawable
         self.depthStencilTexture = depthStencilTexture
@@ -40,17 +40,26 @@ public extension MetalPassInfo{
         for key in renderableData.passColorAttachments.keys{
             if let a = renderableData.passColorAttachments[key]{
                 if a.texture == nil{
-                    if key != 0{
+                    //why these are two different options?? key=0, key!=0
+                    //if key != 0{
                         let d = a.descriptor
                         d.texture = self.drawable?.texture
                         renderPassDescriptor.colorAttachments[key] = d
-                    }else{
-                        a.apply(
-                            toDescriptor: renderPassDescriptor.colorAttachments[key]
-                        )
-                    }
+                    //}else{
+//                        print("a.apply")
+//                        print(renderPassDescriptor)
+                        
+//                        a.apply(
+//                            toDescriptor: renderPassDescriptor.colorAttachments[key]
+//                        )
+//                    }
                 }else{
-                    renderPassDescriptor.colorAttachments[key] = a.descriptor
+//                    print("set desc")
+//                    print(renderPassDescriptor)
+                    a.apply(
+                        toDescriptor: renderPassDescriptor.colorAttachments[key]
+                    )
+                    //renderPassDescriptor.colorAttachments[key] = a.descriptor
                 }
             }
         }
@@ -79,6 +88,7 @@ public extension MetalPassInfo{
             var outTexture: MTLTexture
             if let t = renderPassDescriptor.colorAttachments[0].texture{
                 outTexture = t
+                
             }else{
                 outTexture = drawable!.texture
             }
