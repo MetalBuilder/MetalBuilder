@@ -302,6 +302,20 @@ public final class MTLBufferContainer<T>: BufferContainer{
                 .bufferNotCreated
         }
     }
+    /// Create buffer if the buffer doesn't exist or it's count if not equal to the source buffer.
+    public func create<T>(like sourceBuffer: MTLBufferContainer<T>, device: MTLDevice) throws{
+        if self.buffer == nil || self.count != sourceBuffer.count{
+            try! self.create(device: device,
+                             count: sourceBuffer.count)
+        }
+    }
+    /// Create buffer if the buffer doesn't exist or it's count if not equal to the count..
+    public func create(likeCount count: Int, device: MTLDevice) throws{
+        if self.buffer == nil || self.count != count{
+            try! self.create(device: device,
+                             count: count)
+        }
+    }
     override func createBufferProtocolConformingBuffer() -> BufferProtocol{
         Buffer(container: self, offset: .constant(0), index: 0)
     }

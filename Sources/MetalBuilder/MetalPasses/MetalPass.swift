@@ -56,10 +56,10 @@ public extension MetalPassInfo{
                 }else{
 //                    print("set desc")
 //                    print(renderPassDescriptor)
-                    a.apply(
-                        toDescriptor: renderPassDescriptor.colorAttachments[key]
-                    )
-                    //renderPassDescriptor.colorAttachments[key] = a.descriptor
+//                    a.apply(
+//                        toDescriptor: renderPassDescriptor.colorAttachments[key]
+//                    )
+                    renderPassDescriptor.colorAttachments[key] = a.descriptor
                 }
             }
         }

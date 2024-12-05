@@ -6,7 +6,7 @@ import SwiftUI
 /// otherwise the contents of `librarySource` will be concatinated to global LibrarySource.
 /// - Important: If two or more BuildingBlocks have identical `librarySource` this source will be added only once.
 public protocol MetalBuildingBlock: MetalBuilderComponent{
-    var context: MetalBuilderRenderingContext { get set }
+    var context: MetalBuilderRenderingContext { get }
     var helpers: String { get }
     var librarySource: String { get }
     var compileOptions: MetalBuilderCompileOptions? { get }

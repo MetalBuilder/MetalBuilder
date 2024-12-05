@@ -35,10 +35,10 @@ public struct MetalTypeDeclaration{
     let declaration: String
 }
 
-typealias simd_half1 = Float16
-typealias simd_half2 = SIMD2<Float16>
-typealias simd_half3 = SIMD3<Float16>
-typealias simd_half4 = SIMD4<Float16>
+//typealias simd_half1 = Float16
+//typealias simd_half2 = SIMD2<Float16>
+//typealias simd_half3 = SIMD3<Float16>
+//typealias simd_half4 = SIMD4<Float16>
 
 /// Returns a string with the Metal type corresponding to the given Swift type.
 public func metalType(for swiftType: Any.Type)->String?{
